@@ -1,0 +1,6 @@
+Is B1 available: True
+Promo price: 16.0
+Ticket Hash: 3fab8fc159f6c8f4d993cfca213b143587ff0137b6bbd488716b060a1a33ab80
+Booking PIN: 7802
+Seating chart exported to: seating_chart.txt
+Sold count: 1

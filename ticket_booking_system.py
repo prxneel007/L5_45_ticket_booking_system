@@ -12,7 +12,7 @@ theater_seats = {
 
 
 def reserve_seat(seat_id, customer, order_history=None):
-    """Reserve an available seat and optionally append to a supplied history."""
+    """Reserve an available seat and update the optional history."""
     if order_history is None:
         order_history = []
     if seat_id not in theater_seats or theater_seats[seat_id]["is_sold"]:
@@ -40,7 +40,10 @@ def check_seat_status(seat_id):
 def compute_discounted_price(seat_id, promo_expr):
     """Apply base_price * factor, where factor is a decimal from 0 to 1."""
     base_price = theater_seats[seat_id]["price"]
-    match = re.fullmatch(r"base_price\s*\*\s*(0(?:\.\d+)?|1(?:\.0+)?)", promo_expr.strip())
+    match = re.fullmatch(
+        r"base_price\s*\*\s*(0(?:\.\d+)?|1(?:\.0+)?)",
+        promo_expr.strip(),
+    )
     if match is None:
         raise ValueError("Use base_price * factor, with factor from 0 to 1")
     return round(base_price * float(match.group(1)), 2)

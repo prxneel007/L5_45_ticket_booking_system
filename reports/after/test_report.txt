@@ -1,0 +1,11 @@
+test_cancel_and_status (test_ticket_booking_system.BookingTests.test_cancel_and_status) ... ok
+test_discounts (test_ticket_booking_system.BookingTests.test_discounts) ... ok
+test_export_and_summary (test_ticket_booking_system.BookingTests.test_export_and_summary) ... ok
+test_hash_and_pin (test_ticket_booking_system.BookingTests.test_hash_and_pin) ... ok
+test_import_does_not_run_demo (test_ticket_booking_system.BookingTests.test_import_does_not_run_demo) ... ok
+test_reserve_and_history (test_ticket_booking_system.BookingTests.test_reserve_and_history) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK
