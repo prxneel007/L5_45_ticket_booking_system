@@ -3,7 +3,6 @@
 import hashlib
 import re
 import secrets
-import math
 
 theater_seats = {
     "A1": {"tier": "Standard", "price": 12.0, "is_sold": False},
@@ -12,15 +11,19 @@ theater_seats = {
 }
 
 
-def reserveSeat(seat_id, customer, order_history=[]):
+def reserve_seat(seat_id, customer, order_history=None):
+    """Reserve an available seat and optionally append to a supplied history."""
+    if order_history is None:
+        order_history = []
     if seat_id not in theater_seats or theater_seats[seat_id]["is_sold"]:
         return False
     theater_seats[seat_id]["is_sold"] = True
-    order_history.append("Reserved seat %s for customer %s" % (seat_id, customer))
+    order_history.append(f"Reserved seat {seat_id} for customer {customer}")
     return True
 
 
 def cancel_seat(seat_id):
+    """Cancel a known seat; return False for an unknown seat."""
     if seat_id not in theater_seats:
         return False
     theater_seats[seat_id]["is_sold"] = False
@@ -28,16 +31,14 @@ def cancel_seat(seat_id):
 
 
 def check_seat_status(seat_id):
-    booking_fee = 1.50
-    if theater_seats.get(seat_id) == None:
+    """Return whether a known seat is available."""
+    if theater_seats.get(seat_id) is None:
         return False
-    if not theater_seats[seat_id]["is_sold"]:
-        return True
-    else:
-        return False
+    return not theater_seats[seat_id]["is_sold"]
 
 
 def compute_discounted_price(seat_id, promo_expr):
+    """Apply base_price * factor, where factor is a decimal from 0 to 1."""
     base_price = theater_seats[seat_id]["price"]
     match = re.fullmatch(r"base_price\s*\*\s*(0(?:\.\d+)?|1(?:\.0+)?)", promo_expr.strip())
     if match is None:
@@ -46,30 +47,34 @@ def compute_discounted_price(seat_id, promo_expr):
 
 
 def generate_ticket_hash(ticket_code):
+    """Return a SHA-256 identifier; this is not an authentication token."""
     return hashlib.sha256(ticket_code.encode()).hexdigest()
 
 
 def generate_booking_pin():
+    """Generate a random four-digit booking PIN using secrets."""
     return 1000 + secrets.randbelow(9000)
 
 
 def export_seating_chart(filename="seating_chart.txt"):
-    f = open(filename, "w")
-    f.write(str(theater_seats))
-    f.close()
+    """Write the seating chart as UTF-8 text without invoking a shell."""
+    with open(filename, "w", encoding="utf-8") as chart_file:
+        chart_file.write(str(theater_seats))
     print("Seating chart exported to:", filename)
 
 
-def get_theater_summary(theater_seats):
+def get_theater_summary(seats):
+    """Count sold seats in the supplied seating map."""
     sold_count = 0
-    for seat, details in theater_seats.items():
+    for details in seats.values():
         if details["is_sold"]:
             sold_count += 1
     return sold_count
 
 
 def main():
-    reserveSeat("A1", "Sarah Connor")
+    """Demonstrate booking, cancellation, discounting and chart export."""
+    reserve_seat("A1", "Sarah Connor")
     cancel_seat("A2")
     print("Is B1 available:", check_seat_status("B1"))
     print("Promo price:", compute_discounted_price("B1", "base_price * 0.80"))
@@ -79,4 +84,5 @@ def main():
     print("Sold count:", get_theater_summary(theater_seats))
 
 
-main()
+if __name__ == "__main__":
+    main()
